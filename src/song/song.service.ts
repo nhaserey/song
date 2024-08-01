@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSongDto } from './dto/create-song.dto';
 import { UpdateSongDto } from './dto/update-song.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,14 +21,22 @@ export class SongService {
   ) {}
 
   async create(createSongDto: CreateSongDto): Promise<Song> {
+    const { title, releasedDate, lyrice, duration, artistIds } = createSongDto;
     const song = new Song();
-    song.title = createSongDto.title;
-    song.artists = createSongDto.artists;
-    song.duration = createSongDto.duration;
-    song.lyrics = createSongDto.lyrice;
-    song.releasedDate = createSongDto.releasedDate;
+    song.title = title;
+    song.releasedDate = releasedDate;
+    song.duration = duration;
+    song.lyrics = lyrice;
+    let artists: Artist[] = [];
+    if (artistIds && Array.isArray(artistIds)) {
+      artists = await this.artistRepositories.findByIds(artistIds);
+      if (artists.length !== artistIds.length) {
+        throw new NotFoundException('One or more artist IDs are invalid');
+      }
+    } else {
+      throw new NotFoundException('Invalid artist IDs provided');
+    }
 
-    const artists = await this.artistRepositories.findByIds(song.artists);
     song.artists = artists;
 
     return this.songRepositories.save(song);

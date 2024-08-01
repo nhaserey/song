@@ -1,5 +1,9 @@
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from '../../user/entities/user.entity';
+import { Playlist } from '../../playlist/entities/playlist.entity';
+import { Artist } from '../../artist/entities/artist.entity';
+import { Song } from '../../song/entities/song.entity';
 
 export const TypeOrmConfig = TypeOrmModule.forRootAsync({
   imports: [ConfigModule],
@@ -10,7 +14,7 @@ export const TypeOrmConfig = TypeOrmModule.forRootAsync({
     username: configService.get<string>('POSTGRES_USER'),
     password: configService.get<string>('POSTGRES_PASSWORD'),
     database: configService.get<string>('POSTGRES_DB_NAME'),
-    entities: [],
+    entities: [User, Playlist, Artist, Song],
     synchronize: true,
   }),
   inject: [ConfigService],

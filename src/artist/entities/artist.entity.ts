@@ -15,7 +15,7 @@ export class Artist {
 
   @OneToOne(() => User)
   @JoinColumn()
-  user = User;
+  user: User;
 
   @ManyToMany(() => Song, (song) => song.artists)
   song: Song[];
