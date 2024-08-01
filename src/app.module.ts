@@ -11,6 +11,7 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
 import { UserModule } from './user/user.module';
 import { PlaylistModule } from './playlist/playlist.module';
 import { ArtistModule } from './artist/artist.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ArtistModule } from './artist/artist.module';
     UserModule,
     PlaylistModule,
     ArtistModule,
+    AuthModule,
   ],
 })
 export class AppModule implements NestModule {
