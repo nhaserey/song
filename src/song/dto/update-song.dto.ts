@@ -29,7 +29,9 @@ export class UpdateSongDto {
   @IsDateString()
   readonly releasedDate: Date;
 
-  @ApiPropertyOptional({ description: 'Duration of the song in HH:mm:ss format' })
+  @ApiPropertyOptional({
+    description: 'Duration of the song in HH:mm:ss format',
+  })
   @IsOptional()
   @IsMilitaryTime()
   readonly duration: Date;

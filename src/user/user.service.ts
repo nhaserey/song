@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { v4 as uuid4 } from 'uuid';
 import * as bcrypt from 'bcryptjs';
+import { LogginAuthDto } from 'src/auth/dto/loggin-auth.dto';
 
 @Injectable()
 export class UserService {
@@ -20,10 +21,10 @@ export class UserService {
     user.lastName = createUserDto.lastName;
     user.email = createUserDto.email;
     user.apiKey = uuid4();
-    
+
     const salt = await bcrypt.genSalt();
     user.password = bcrypt.hashSync(createUserDto.password, salt);
-    
+
     const savedUser = await this.userRepositories.save(user);
     delete savedUser.password;
     return savedUser;
@@ -33,12 +34,20 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOne(data: LogginAuthDto): Promise<User> {
+    const user = await this.userRepositories.findOneBy({ email: data.email });
+    if (!user) {
+      throw new UnauthorizedException('Could not find user');
+    }
+    return user;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
+  }
+  
+  async findByApiKey(apiKey: string): Promise<User> {
+    return this.userRepositories.findOneBy({ apiKey });
   }
 
   remove(id: number) {

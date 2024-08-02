@@ -2,7 +2,7 @@ import { Controller, Post, Body } from '@nestjs/common';
 import { PlaylistService } from './playlist.service';
 import { CreatePlaylistDto } from './dto/create-playlist.dto';
 import { Playlist } from './entities/playlist.entity';
-import { ApiTags } from "@nestjs/swagger";
+import { ApiTags } from '@nestjs/swagger';
 
 @ApiTags('PlayList')
 @Controller('playlists')

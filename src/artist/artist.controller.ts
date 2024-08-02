@@ -21,18 +21,8 @@ export class ArtistController {
     return this.artistService.create(createArtistDto);
   }
 
-  @Get()
-  findAll() {
-    return this.artistService.findAll();
-  }
-
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.artistService.findArtist(id);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.artistService.remove(+id);
   }
 }

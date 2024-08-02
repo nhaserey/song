@@ -26,15 +26,7 @@ export class ArtistService {
     return await this.artistRepositories.save(newArtist);
   }
 
-  findAll() {
-    return `This action returns all artist`;
-  }
-
   findArtist(userId: number): Promise<Artist> {
     return this.artistRepositories.findOneBy({ user: { id: userId } });
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} artist`;
   }
 }
