@@ -2,7 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { Repository, type UpdateResult } from 'typeorm';
 import { v4 as uuid4 } from 'uuid';
 import * as bcrypt from 'bcryptjs';
 import { LogginAuthDto } from 'src/auth/dto/loggin-auth.dto';
@@ -29,8 +29,8 @@ export class UserService {
     return savedUser;
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findById(id: number): Promise<User> {
+    return this.userRepositories.findOneBy({ id: id });
   }
 
   async findOne(data: LogginAuthDto): Promise<User> {
@@ -41,11 +41,27 @@ export class UserService {
     return user;
   }
 
+  async disable2FA(userId: number): Promise<UpdateResult> {
+    return this.userRepositories.update(
+      { id: userId },
+      {
+        enable2FA: false,
+        twoFASecret: null,
+      },
+    );
+  }
+
   async findByApiKey(apiKey: string): Promise<User> {
     return this.userRepositories.findOneBy({ apiKey });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async updateSecretKey(userId, secret: string): Promise<UpdateResult> {
+    return this.userRepositories.update(
+      { id: userId },
+      {
+        twoFASecret: secret,
+        enable2FA: true,
+      },
+    );
   }
 }
